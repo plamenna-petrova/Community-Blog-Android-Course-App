@@ -41,11 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText userPassword;
     private EditText userPasswordConfirmation;
     private EditText userName;
-
     private ProgressBar loadingProgress;
-
     private Button regBtn;
-
     private FirebaseAuth mAuth;
 
     @Override
