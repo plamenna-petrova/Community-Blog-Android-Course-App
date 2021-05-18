@@ -61,44 +61,38 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        regBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                regBtn.setVisibility(View.INVISIBLE);
-                loadingProgress.setVisibility(View.VISIBLE);
-                final String email = userEmail.getText().toString();
-                final String password = userPassword.getText().toString();
-                final String passwordToConfirm = userPasswordConfirmation.getText().toString();
-                final String name = userName.getText().toString();
+        regBtn.setOnClickListener(view -> {
+            regBtn.setVisibility(View.INVISIBLE);
+            loadingProgress.setVisibility(View.VISIBLE);
+            final String email = userEmail.getText().toString();
+            final String password = userPassword.getText().toString();
+            final String passwordToConfirm = userPasswordConfirmation.getText().toString();
+            final String name = userName.getText().toString();
 
-                if ( email.isEmpty() || name.isEmpty() || password.isEmpty() || !password.equals(passwordToConfirm) ) {
-                    // something goes wrong : all fields must be filled
-                    // we need to display an error message
-                    showMessage("Please Verify all fields");
-                    regBtn.setVisibility(View.VISIBLE);
-                    loadingProgress.setVisibility(View.INVISIBLE);
-                }
-                else
-                {
-                    // everything is ok and all fields are filled now we can start creating user account
-                    // CreateUserAccount method will try to create the user if the email is valid
-                    CreateUserAccount(email, name, password);
-                }
+            if ( email.isEmpty() || name.isEmpty() || password.isEmpty() || !password.equals(passwordToConfirm) ) {
+                // something goes wrong : all fields must be filled
+                // we need to display an error message
+                showMessage("Please Verify all fields");
+                regBtn.setVisibility(View.VISIBLE);
+                loadingProgress.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                // everything is ok and all fields are filled now we can start creating user account
+                // CreateUserAccount method will try to create the user if the email is valid
+                CreateUserAccount(email, name, password);
             }
         });
 
         ImgUserPhoto = findViewById(R.id.regUserPhoto);
 
-        ImgUserPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= 22) {
-                    checkAndRequestForPermission();
-                }
-                else
-                {
-                    openGallery();
-                }
+        ImgUserPhoto.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= 22) {
+                checkAndRequestForPermission();
+            }
+            else
+            {
+                openGallery();
             }
         });
     }
@@ -107,22 +101,19 @@ public class RegisterActivity extends AppCompatActivity {
         // this method creates user account with specific email and password
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // user account created successfully
-                            showMessage("Account created");
-                            // after we created user account we need to update the profile picture and name
-                            updateUserInfo(name, pickedImgUri, mAuth.getCurrentUser());
-                        }
-                        else
-                        {
-                            // failed to create an account
-                            showMessage("Failed to create an account" + task.getException().getMessage());
-                            regBtn.setVisibility(View.VISIBLE);
-                            loadingProgress.setVisibility(View.INVISIBLE);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // user account created successfully
+                        showMessage("Account created");
+                        // after we created user account we need to update the profile picture and name
+                        updateUserInfo(name, pickedImgUri, mAuth.getCurrentUser());
+                    }
+                    else
+                    {
+                        // failed to create an account
+                        showMessage("Failed to create an account" + task.getException().getMessage());
+                        regBtn.setVisibility(View.VISIBLE);
+                        loadingProgress.setVisibility(View.INVISIBLE);
                     }
                 });
 
@@ -134,37 +125,28 @@ public class RegisterActivity extends AppCompatActivity {
         StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
         StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());
 
-        imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // image uploaded successfully
-                // now we can get our image url
+        imageFilePath.putFile(pickedImgUri).addOnSuccessListener(taskSnapshot -> {
+            // image uploaded successfully
+            // now we can get our image url
 
-                imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        // uri contains the user image url
-                        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().
-                                setDisplayName(name)
-                                .setPhotoUri(uri)
-                                .build();
+            imageFilePath.getDownloadUrl().addOnSuccessListener(uri -> {
+                // uri contains the user image url
+                UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().
+                        setDisplayName(name)
+                        .setPhotoUri(uri)
+                        .build();
 
-                        currentUser.updateProfile(profileUpdate)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            // the user info is updated successfully
-                                            showMessage("The registration is completed");
-                                            updateUI();
-                                        }
-                                    }
-                                });
+                currentUser.updateProfile(profileUpdate)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // the user info is updated successfully
+                                showMessage("The registration is completed");
+                                updateUI();
+                            }
+                        });
 
-                    }
-                });
+            });
 
-            }
         });
 
     }

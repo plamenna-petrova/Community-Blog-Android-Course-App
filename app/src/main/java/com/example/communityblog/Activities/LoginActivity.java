@@ -44,55 +44,46 @@ public class LoginActivity extends AppCompatActivity {
         HomeActivity = new Intent(this, com.example.communityblog.Activities.HomeActivity.class);
         loginPhoto = findViewById(R.id.login_photo);
 
-        loginPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent registerActivity = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(registerActivity);
-                finish();
-            }
+        loginPhoto.setOnClickListener(view -> {
+            Intent registerActivity = new Intent(getApplicationContext(), RegisterActivity.class);
+            startActivity(registerActivity);
+            finish();
         });
 
         loginProgress.setVisibility(View.INVISIBLE);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginProgress.setVisibility(View.VISIBLE);
-                btnLogin.setVisibility(View.INVISIBLE);
+        btnLogin.setOnClickListener(view -> {
+            loginProgress.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.INVISIBLE);
 
-                final String loginMail = userMailLogin.getText().toString();
-                final String loginPassword = userPasswordLogin.getText().toString();
+            final String loginMail = userMailLogin.getText().toString();
+            final String loginPassword = userPasswordLogin.getText().toString();
 
-                if (loginMail.isEmpty() || loginPassword.isEmpty()) {
-                    showLoginMessage("Please Verify All Fields");
-                    btnLogin.setVisibility(View.VISIBLE);
-                    loginProgress.setVisibility(View.INVISIBLE);
-                }
-                else
-                {
-                    signIn(loginMail, loginPassword);
-                }
+            if (loginMail.isEmpty() || loginPassword.isEmpty()) {
+                showLoginMessage("Please Verify All Fields");
+                btnLogin.setVisibility(View.VISIBLE);
+                loginProgress.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                signIn(loginMail, loginPassword);
             }
         });
     }
 
     private void signIn(String mail, String password) {
         mAuth.signInWithEmailAndPassword(mail, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            loginProgress.setVisibility(View.INVISIBLE);
-                            btnLogin.setVisibility(View.VISIBLE);
-                            updateUI();
-                        }
-                        else
-                        {
-                            showLoginMessage(task.getException().getMessage());
-                            btnLogin.setVisibility(View.VISIBLE);
-                            loginProgress.setVisibility(View.INVISIBLE);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        loginProgress.setVisibility(View.INVISIBLE);
+                        btnLogin.setVisibility(View.VISIBLE);
+                        updateUI();
+                    }
+                    else
+                    {
+                        showLoginMessage(task.getException().getMessage());
+                        btnLogin.setVisibility(View.VISIBLE);
+                        loginProgress.setVisibility(View.INVISIBLE);
                     }
                 });
 
