@@ -1,6 +1,5 @@
 package com.example.communityblog.Activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,14 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.communityblog.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.login_btn);
         loginProgress = findViewById(R.id.login_progress);
         mAuth = FirebaseAuth.getInstance();
-        HomeActivity = new Intent(this, com.example.communityblog.Activities.Home.class);
+        HomeActivity = new Intent(this, com.example.communityblog.Activities.HomeActivity.class);
         loginPhoto = findViewById(R.id.login_photo);
 
         loginPhoto.setOnClickListener(view -> {
