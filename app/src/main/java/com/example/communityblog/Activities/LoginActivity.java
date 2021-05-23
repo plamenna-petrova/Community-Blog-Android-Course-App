@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class LoginActivity extends AppCompatActivity {
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.login_btn);
         loginProgress = findViewById(R.id.login_progress);
         mAuth = FirebaseAuth.getInstance();
-        HomeActivity = new Intent(this, com.example.communityblog.Activities.HomeActivity.class);
+        HomeActivity = new Intent(this, com.example.communityblog.Activities.Home.class);
         loginPhoto = findViewById(R.id.login_photo);
 
         loginPhoto.setOnClickListener(view -> {
@@ -81,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        showLoginMessage(task.getException().getMessage());
+                        showLoginMessage(Objects.requireNonNull(task.getException()).getMessage());
                         btnLogin.setVisibility(View.VISIBLE);
                         loginProgress.setVisibility(View.INVISIBLE);
                     }

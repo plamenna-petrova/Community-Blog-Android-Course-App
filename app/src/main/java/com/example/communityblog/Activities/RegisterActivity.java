@@ -30,6 +30,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Objects;
+
 public class RegisterActivity extends AppCompatActivity {
 
     ImageView ImgUserPhoto;
@@ -111,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
                     else
                     {
                         // failed to create an account
-                        showMessage("Failed to create an account" + task.getException().getMessage());
+                        showMessage("Failed to create an account" + Objects.requireNonNull(task.getException()).getMessage());
                         regBtn.setVisibility(View.VISIBLE);
                         loadingProgress.setVisibility(View.INVISIBLE);
                     }
@@ -189,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        Intent homeActivity = new Intent(getApplicationContext(), HomeActivity.class);
+        Intent homeActivity = new Intent(getApplicationContext(), Home.class);
         startActivity(homeActivity);
         finish();
     }
