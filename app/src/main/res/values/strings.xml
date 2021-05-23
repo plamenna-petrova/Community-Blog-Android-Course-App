@@ -24,4 +24,7 @@
     <string name="nav_drawer_profile_title">Profile</string>
     <string name="nav_drawer_sign_out_title">Sign Out</string>
     <string name="fab_icon_style_content_description">Fab Ico Home</string>
+    <string name="home_fragment">"Home Fragment"</string>
+    <string name="profile_fragment">"Profile Fragment"</string>
+    <string name="settings_fragment">"Settings Fragment"</string>
 </resources>

@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.communityblog.Fragments.HomeFragment;
+import com.example.communityblog.Fragments.ProfileFragment;
+import com.example.communityblog.Fragments.SettingsFragment;
 import com.example.communityblog.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -99,13 +102,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
         }
         else if (id == R.id.nav_profile) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new ProfileFragment()).commit();
         }
         else if (id == R.id.nav_settings) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
         }
         else if (id == R.id.nav_signout) {
 
