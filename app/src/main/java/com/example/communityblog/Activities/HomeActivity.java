@@ -6,12 +6,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +36,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    Dialog popupAddPost;
+
+    ImageView popupUserImage;
+    ImageView popupPostImage;
+    ImageView popupAddBtn;
+    TextView popupTitle;
+    TextView popupDescription;
+    ProgressBar popupClickProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +57,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        // ini popup
+        iniPopup();
+        setupPopupImageClick();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show());
+            popupAddPost.show());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -59,6 +75,43 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         updateNavHeader();
 
+    }
+
+    private void iniPopup() {
+        popupAddPost = new Dialog(this);
+        popupAddPost.setContentView(R.layout.popup_add_post);
+        popupAddPost.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupAddPost.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        popupAddPost.getWindow().getAttributes().gravity = Gravity.TOP;
+
+        // ini popup widgets
+        popupUserImage = popupAddPost.findViewById(R.id.popup_user_image);
+        popupPostImage = popupAddPost.findViewById(R.id.popup_img);
+        popupTitle = popupAddPost.findViewById(R.id.popup_title);
+        popupDescription = popupAddPost.findViewById(R.id.popup_description);
+        popupAddBtn = popupAddPost.findViewById(R.id.popup_add);
+        popupClickProgress = popupAddPost.findViewById(R.id.popup_progressBar);
+
+        // load current user profile photo
+
+        Glide.with(HomeActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
+
+
+        // Add post click Listener
+
+        popupAddBtn.setOnClickListener(view -> {
+            popupAddBtn.setVisibility(View.INVISIBLE);
+            popupClickProgress.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void setupPopupImageClick() {
+        popupPostImage.setOnClickListener(view -> {
+            // here when the image is clicked we need to open the gallery
+            // before we open the gallery we need to check if our app has the access to user files
+            // made before in register activity
+
+        });
     }
 
     @Override

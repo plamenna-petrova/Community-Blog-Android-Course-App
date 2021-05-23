@@ -27,4 +27,9 @@
     <string name="home_fragment">"Home Fragment"</string>
     <string name="profile_fragment">"Profile Fragment"</string>
     <string name="settings_fragment">"Settings Fragment"</string>
+    <string name="popup_user_image_content_description">Popup User Image</string>
+    <string name="popup_title">Title</string>
+    <string name="popup_description">Description</string>
+    <string name="popup_image_content_description">Popup Image</string>
+    <string name="popup_add_post_content_description">Popup Add Post</string>
 </resources>
