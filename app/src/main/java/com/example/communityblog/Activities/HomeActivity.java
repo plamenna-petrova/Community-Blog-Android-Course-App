@@ -1,5 +1,6 @@
 package com.example.communityblog.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,12 +30,20 @@ import com.bumptech.glide.Glide;
 import com.example.communityblog.Fragments.HomeFragment;
 import com.example.communityblog.Fragments.ProfileFragment;
 import com.example.communityblog.Fragments.SettingsFragment;
+import com.example.communityblog.Models.Post;
 import com.example.communityblog.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Objects;
 
@@ -57,7 +66,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Uri pickedImgUri = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -88,7 +98,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void setupPopupImageClick() {
+    private void setupPopupImageClick()
+    {
         popupPostImage.setOnClickListener(view -> {
             // here when image clicked we need to open the gallery
             // before we open the gallery we need to check if our app have the access to user files
@@ -97,7 +108,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void checkAndRequestForPermission() {
+    private void checkAndRequestForPermission()
+    {
         if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -115,7 +127,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             openGallery();
     }
 
-    private void openGallery() {
+    private void openGallery()
+    {
         //open gallery intent and wait for user to pick an image !
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
@@ -124,7 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     // when user picked an image ...
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && requestCode == REQUESTCODE && data != null ) {
@@ -135,7 +149,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void iniPopup() {
+    private void iniPopup()
+    {
         popupAddPost = new Dialog(this);
         popupAddPost.setContentView(R.layout.popup_add_post);
         popupAddPost.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -163,24 +178,60 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             if (!popupTitle.getText().toString().isEmpty() && !popupDescription.getText().toString().isEmpty() && pickedImgUri != null) {
                 //everything is okay, no empty or null values
+                // TODO Create Post Object and add it to firebase database
+                // first we need to upload the post image
+                // access firebase storage
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("community_blog_images");
+                StorageReference imageFilePath = storageReference.child(pickedImgUri.getLastPathSegment());
 
-
+                imageFilePath.putFile(pickedImgUri).addOnSuccessListener(taskSnapshot -> imageFilePath.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageDownloadLink = uri.toString();
+                    // create post Object
+                    Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString());
+                    // Add post to Firebase Database
+                    addPost(post);
+                }).addOnFailureListener(exception -> {
+                    // something goes wrong when uploading the picture
+                    showMessage(exception.getMessage());
+                    popupClickProgress.setVisibility(View.INVISIBLE);
+                    popupAddBtn.setVisibility(View.VISIBLE);
+                }));
             }
             else
             {
-                showMessage("Please verify all input fields and choose Post Image");
+                showMessage("Please verify all input fields and choose Post Image") ;
                 popupAddBtn.setVisibility(View.VISIBLE);
                 popupClickProgress.setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    private void showMessage(String message) {
+    private void addPost(Post post)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://communityblog-e2892-default-rtdb.europe-west1.firebasedatabase.app/");
+        DatabaseReference myRef = database.getReference("Posts").push();
+
+        // get post unique ID and update post key
+        String key = myRef.getKey();
+        post.setPostKey(key);
+
+        // add post data to firebase database
+        myRef.setValue(post).addOnSuccessListener(aVoid -> {
+            showMessage("Post Added successfully");
+            popupClickProgress.setVisibility(View.INVISIBLE);
+            popupAddBtn.setVisibility(View.VISIBLE);
+            popupAddPost.dismiss();
+        });
+    }
+
+    private void showMessage(String message)
+    {
         Toast.makeText(HomeActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -190,14 +241,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -214,7 +267,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressWarnings({"StatementWithEmptyBody", "RedundantSuppression"})
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -242,7 +296,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void updateNavHeader() {
+    public void updateNavHeader()
+    {
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.nav_username);
