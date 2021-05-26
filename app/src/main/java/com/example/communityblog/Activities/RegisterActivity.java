@@ -26,7 +26,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity
+{
 
     ImageView ImgUserPhoto;
     static int PReqCode = 1;
@@ -42,7 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -93,7 +95,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void CreateUserAccount(String email, String name, String password) {
+    private void CreateUserAccount(String email, String name, String password)
+    {
         // this method creates user account with specific email and password
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -116,7 +119,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     // update user photo and name
-    private void updateUserInfo(String name, Uri pickedImgUri, FirebaseUser currentUser) {
+    private void updateUserInfo(String name, Uri pickedImgUri, FirebaseUser currentUser)
+    {
         // first we need to upload the user photo to the Firebase storage and get the url
         StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
         StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());

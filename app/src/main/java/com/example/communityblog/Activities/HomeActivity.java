@@ -47,7 +47,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.Objects;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+{
 
     private static final int PReqCode = 2;
     private static final int REQUESTCODE = 2;
@@ -96,6 +97,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         updateNavHeader();
 
+        // set the home fragment as the default done
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
     }
 
     private void setupPopupImageClick()
@@ -178,7 +182,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             if (!popupTitle.getText().toString().isEmpty() && !popupDescription.getText().toString().isEmpty() && pickedImgUri != null) {
                 //everything is okay, no empty or null values
-                // TODO Create Post Object and add it to firebase database
+                // Creating Post Object and adding it to Firebase Realtime Database
                 // first we need to upload the post image
                 // access firebase storage
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("community_blog_images");

@@ -32,4 +32,7 @@
     <string name="popup_description">Description</string>
     <string name="popup_image_content_description">Popup Image</string>
     <string name="popup_add_post_content_description">Popup Add Post</string>
+    <string name="row_post_image_content_description">Row Post Image</string>
+    <string name="row_post_image_view_content_description">Black Gradient</string>
+    <string name="row_post_title">Row Post Title</string>
 </resources>

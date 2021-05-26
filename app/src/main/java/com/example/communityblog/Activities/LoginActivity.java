@@ -17,7 +17,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity
+{
 
     private EditText userMailLogin;
     private EditText userPasswordLogin;
@@ -28,7 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView loginPhoto;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -67,7 +69,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void signIn(String mail, String password) {
+    private void signIn(String mail, String password)
+    {
         mAuth.signInWithEmailAndPassword(mail, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -85,17 +88,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void showLoginMessage(String text) {
+    private void showLoginMessage(String text)
+    {
         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 
-    private void updateUI() {
+    private void updateUI()
+    {
         startActivity(HomeActivity);
         finish();
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
 

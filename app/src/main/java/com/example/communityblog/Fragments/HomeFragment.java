@@ -6,12 +6,24 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.communityblog.Adapters.PostAdapter;
+import com.example.communityblog.Models.Post;
 import com.example.communityblog.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +43,14 @@ public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public HomeFragment() {
+    RecyclerView postRecyclerView;
+    PostAdapter postAdapter;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    List<Post> postList;
+
+    public HomeFragment()
+    {
         // Required empty public constructor
     }
 
@@ -44,7 +63,8 @@ public class HomeFragment extends Fragment {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance(String param1, String param2)
+    {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -64,13 +84,47 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_home, container, false);
+        postRecyclerView = fragmentView.findViewById(R.id.postRecyclerView);
+        postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        postRecyclerView.setHasFixedSize(true);
+        firebaseDatabase = FirebaseDatabase.getInstance("https://communityblog-e2892-default-rtdb.europe-west1.firebasedatabase.app/");
+        databaseReference = firebaseDatabase.getReference("Posts");
+        return fragmentView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Get Posts List from the database
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postList = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    Post post = postSnapshot.getValue(Post.class);
+                    postList.add(post);
+                }
+
+                postAdapter = new PostAdapter(getActivity(), postList);
+                postRecyclerView.setAdapter(postAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(Uri uri)
+    {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -82,7 +136,8 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
@@ -97,7 +152,8 @@ public class HomeFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
