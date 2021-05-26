@@ -3,13 +3,18 @@ package com.example.communityblog.Activities;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.communityblog.Fragments.HomeFragment;
@@ -34,6 +40,9 @@ import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int PReqCode = 2;
+    private static final int REQUESTCODE = 2;
+
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     Dialog popupAddPost;
@@ -44,6 +53,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     TextView popupTitle;
     TextView popupDescription;
     ProgressBar popupClickProgress;
+
+    private Uri pickedImgUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +88,53 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void setupPopupImageClick() {
+        popupPostImage.setOnClickListener(view -> {
+            // here when image clicked we need to open the gallery
+            // before we open the gallery we need to check if our app have the access to user files
+            // we did this before in register activity I'm just going to copy the code to save time ...
+            checkAndRequestForPermission();
+        });
+    }
+
+    private void checkAndRequestForPermission() {
+        if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(HomeActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(HomeActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PReqCode);
+            }
+        }
+        else
+            // everything goes well : we have permission to access user gallery
+            openGallery();
+    }
+
+    private void openGallery() {
+        //open gallery intent and wait for user to pick an image !
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent,REQUESTCODE);
+    }
+
+    // when user picked an image ...
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == REQUESTCODE && data != null ) {
+            // the user has successfully picked an image
+            // we need to save its reference to a Uri variable
+            pickedImgUri = data.getData() ;
+            popupPostImage.setImageURI(pickedImgUri);
+        }
+    }
+
     private void iniPopup() {
         popupAddPost = new Dialog(this);
         popupAddPost.setContentView(R.layout.popup_add_post);
@@ -93,25 +151,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         popupClickProgress = popupAddPost.findViewById(R.id.popup_progressBar);
 
         // load current user profile photo
-
         Glide.with(HomeActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
 
-
         // Add post click Listener
-
         popupAddBtn.setOnClickListener(view -> {
+
             popupAddBtn.setVisibility(View.INVISIBLE);
             popupClickProgress.setVisibility(View.VISIBLE);
+
+            // we need to test all input fields (Title and description) and post image
+
+            if (!popupTitle.getText().toString().isEmpty() && !popupDescription.getText().toString().isEmpty() && pickedImgUri != null) {
+                //everything is okay, no empty or null values
+
+
+            }
+            else
+            {
+                showMessage("Please verify all input fields and choose Post Image");
+                popupAddBtn.setVisibility(View.VISIBLE);
+                popupClickProgress.setVisibility(View.INVISIBLE);
+            }
         });
     }
 
-    private void setupPopupImageClick() {
-        popupPostImage.setOnClickListener(view -> {
-            // here when the image is clicked we need to open the gallery
-            // before we open the gallery we need to check if our app has the access to user files
-            // made before in register activity
-
-        });
+    private void showMessage(String message) {
+        Toast.makeText(HomeActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
