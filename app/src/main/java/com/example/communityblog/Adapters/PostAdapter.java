@@ -1,6 +1,7 @@
 package com.example.communityblog.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.communityblog.Activities.PostDetailsActivity;
 import com.example.communityblog.Models.Post;
 import com.example.communityblog.R;
 
@@ -62,6 +64,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder>
             postTitle = itemView.findViewById(R.id.row_post_title);
             imgPost = itemView.findViewById(R.id.row_post_image);
             imgPostProfile = itemView.findViewById(R.id.row_post_profile_img);
+
+            itemView.setOnClickListener(view -> {
+                Intent postDetailsActivityIntent = new Intent(mContext, PostDetailsActivity.class);
+                int position = getAdapterPosition();
+                postDetailsActivityIntent.putExtra("title", mData.get(position).getTitle());
+                postDetailsActivityIntent.putExtra("postImage", mData.get(position).getPicture());
+                postDetailsActivityIntent.putExtra("description", mData.get(position).getDescription());
+                postDetailsActivityIntent.putExtra("postKey", mData.get(position).getPostKey());
+                postDetailsActivityIntent.putExtra("userPhoto", mData.get(position).getUserPhoto());
+                // user name not added to post object
+                // postDetailsActivityIntent.putExtra("userName", mData.get(position).getUsername());
+                long timestamp = (long) mData.get(position).getTimeStamp();
+                postDetailsActivityIntent.putExtra("postDetailsDate", timestamp);
+                mContext.startActivity(postDetailsActivityIntent);
+            });
         }
     }
 }
