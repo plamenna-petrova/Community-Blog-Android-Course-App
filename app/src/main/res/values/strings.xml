@@ -44,4 +44,8 @@
     <string name="post_details_write_comment">Write Comment</string>
     <string name="post_details_add_comment">Add</string>
     <string name="post_details_user_image_content_description">Post Details User Image</string>
+    <string name="row_comment_user_img_content_description">User Image in Comment</string>
+    <string name="row_comment_username">Comment Username</string>
+    <string name="row_comment_content">Comment Content Here</string>
+    <string name="row_comment_sample_timestamp">10:20</string>
 </resources>

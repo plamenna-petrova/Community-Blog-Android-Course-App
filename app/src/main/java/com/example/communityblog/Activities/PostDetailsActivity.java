@@ -2,6 +2,8 @@ package com.example.communityblog.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -15,16 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.communityblog.Adapters.CommentAdapter;
 import com.example.communityblog.Models.Comment;
 import com.example.communityblog.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -45,6 +53,10 @@ public class PostDetailsActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
 
     FirebaseDatabase firebaseDatabase;
+
+    RecyclerView recyclerViewComments;
+    CommentAdapter commentAdapter;
+    List<Comment> commentsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +81,31 @@ public class PostDetailsActivity extends AppCompatActivity {
         editTextComment = findViewById(R.id.post_details_comment);
         btnAddComment = findViewById(R.id.post_details_add_comment_btn);
 
+        // recycler view for comments
+        recyclerViewComments = findViewById(R.id.recycler_view_comments);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance("https://communityblog-e2892-default-rtdb.europe-west1.firebasedatabase.app/");
+
+        // add Comment button listener
+        btnAddComment.setOnClickListener(v -> {
+
+            btnAddComment.setVisibility(View.INVISIBLE);
+
+            DatabaseReference commentReference = firebaseDatabase.getReference("Comments").child(postKey).push();
+            String commentContent = editTextComment.getText().toString();
+            String uId = firebaseUser.getUid();
+            String username = firebaseUser.getDisplayName();
+            String uImg = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+            Comment comment = new Comment(commentContent, uId, uImg, username);
+
+            commentReference.setValue(comment).addOnSuccessListener(aVoid -> {
+                showMessage("Comment added");
+                editTextComment.setText("");
+                btnAddComment.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(exception -> showMessage("Failed to add comment" +exception.getMessage()));
+        });
 
         // now we need to bind all data into those views
         // first we need to get post data
@@ -99,24 +133,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         long date = getIntent().getExtras().getLong("postDetailsDate");
         textPostDateName.setText(timeStampToString(date));
 
-        // add Comment button listener
-        btnAddComment.setOnClickListener(v -> {
-
-            btnAddComment.setVisibility(View.INVISIBLE);
-
-            DatabaseReference commentReference = firebaseDatabase.getReference("Comments").child(postKey).push();
-            String commentContent = editTextComment.getText().toString();
-            String uId = firebaseUser.getUid();
-            String username = firebaseUser.getDisplayName();
-            String uImg = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
-            Comment comment = new Comment(commentContent, uId, uImg, username);
-
-            commentReference.setValue(comment).addOnSuccessListener(aVoid -> {
-                showMessage("Comment added");
-                editTextComment.setText("");
-                btnAddComment.setVisibility(View.VISIBLE);
-            }).addOnFailureListener(exception -> showMessage("Failed to add comment" +exception.getMessage()));
-        });
+        iniRecyclerViewComments();
     }
 
     private void showMessage(String message)
@@ -128,7 +145,31 @@ public class PostDetailsActivity extends AppCompatActivity {
     {
         Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
         calendar.setTimeInMillis(time);
-        String dateToFormat = DateFormat.format("dd-MM-yyyy",calendar).toString();
-        return dateToFormat;
+        return DateFormat.format("dd-MM-yyyy",calendar).toString();
+    }
+
+    private void iniRecyclerViewComments()
+    {
+        recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
+        firebaseDatabase = FirebaseDatabase.getInstance("https://communityblog-e2892-default-rtdb.europe-west1.firebasedatabase.app/");
+        DatabaseReference recyclerViewCommentsReference = firebaseDatabase.getReference("Comments").child(postKey);
+        recyclerViewCommentsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                commentsList = new ArrayList<>();
+                for (DataSnapshot userCommentSnapshot: dataSnapshot.getChildren())
+                {
+                    Comment userComment = userCommentSnapshot.getValue(Comment.class);
+                    commentsList.add(userComment);
+                }
+                commentAdapter = new CommentAdapter(getApplicationContext(), commentsList);
+                recyclerViewComments.setAdapter(commentAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
