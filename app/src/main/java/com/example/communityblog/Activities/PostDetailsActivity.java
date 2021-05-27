@@ -1,20 +1,28 @@
 package com.example.communityblog.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.communityblog.Models.Comment;
 import com.example.communityblog.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -35,6 +43,8 @@ public class PostDetailsActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +71,7 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseDatabase = FirebaseDatabase.getInstance("https://communityblog-e2892-default-rtdb.europe-west1.firebasedatabase.app/");
 
         // now we need to bind all data into those views
         // first we need to get post data
@@ -86,10 +97,31 @@ public class PostDetailsActivity extends AppCompatActivity {
         postKey = getIntent().getExtras().getString("postKey");
 
         long date = getIntent().getExtras().getLong("postDetailsDate");
-//        String date = timeStampToString(1622119044);
-
         textPostDateName.setText(timeStampToString(date));
 
+        // add Comment button listener
+        btnAddComment.setOnClickListener(v -> {
+
+            btnAddComment.setVisibility(View.INVISIBLE);
+
+            DatabaseReference commentReference = firebaseDatabase.getReference("Comments").child(postKey).push();
+            String commentContent = editTextComment.getText().toString();
+            String uId = firebaseUser.getUid();
+            String username = firebaseUser.getDisplayName();
+            String uImg = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+            Comment comment = new Comment(commentContent, uId, uImg, username);
+
+            commentReference.setValue(comment).addOnSuccessListener(aVoid -> {
+                showMessage("Comment added");
+                editTextComment.setText("");
+                btnAddComment.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(exception -> showMessage("Failed to add comment" +exception.getMessage()));
+        });
+    }
+
+    private void showMessage(String message)
+    {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private String timeStampToString(long time)
