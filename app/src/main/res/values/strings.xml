@@ -50,4 +50,6 @@
     <string name="row_comment_sample_timestamp">10:20</string>
     <string name="row_post_item_username">Username</string>
     <string name="row_post_item_by">By</string>
+    <string name="post_details_by">By</string>
+    <string name="post_details_username">Damiano David</string>
 </resources>

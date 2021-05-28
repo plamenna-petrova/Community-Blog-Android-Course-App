@@ -44,6 +44,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     TextView textPostDescription;
     TextView textPostDateName;
     TextView textPostTitle;
+    TextView textPostUsername;
     EditText editTextComment;
     Button btnAddComment;
 
@@ -77,6 +78,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         textPostTitle = findViewById(R.id.post_details_title);
         textPostDescription = findViewById(R.id.post_details_description);
         textPostDateName = findViewById(R.id.post_details_date_name);
+        textPostUsername = findViewById(R.id.post_details_username);
 
         editTextComment = findViewById(R.id.post_details_comment);
         btnAddComment = findViewById(R.id.post_details_add_comment_btn);
@@ -147,7 +149,8 @@ public class PostDetailsActivity extends AppCompatActivity {
         long date = getIntent().getExtras().getLong("postDetailsDate");
         textPostDateName.setText(timeStampToString(date));
 
-        String postUsername = getIntent().getExtras().getString("username");
+        String postUsername = getIntent().getExtras().getString("userName");
+        textPostUsername.setText(postUsername);
 
         // ini RecyclerView Comments
         iniRecyclerViewComments();
