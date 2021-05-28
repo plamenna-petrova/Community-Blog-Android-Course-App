@@ -38,7 +38,7 @@
     <string name="post_details_img_content_description">Post Details Image</string>
     <string name="post_details_title">Post Title</string>
     <string name="post_details_timestamp">Timestamp</string>
-    <string name="timestamp_sample">26 May 2021 | by Damiano David</string>
+    <string name="timestamp_sample">26 May 2021</string>
     <string name="lorem_ipsum_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit,rum eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
     <string name="post_details_current_user_image_content_description">Current User Profile Image</string>
     <string name="post_details_write_comment">Write Comment</string>
@@ -49,4 +49,5 @@
     <string name="row_comment_content">Comment Content Here</string>
     <string name="row_comment_sample_timestamp">10:20</string>
     <string name="row_post_item_username">Username</string>
+    <string name="row_post_item_by">By</string>
 </resources>

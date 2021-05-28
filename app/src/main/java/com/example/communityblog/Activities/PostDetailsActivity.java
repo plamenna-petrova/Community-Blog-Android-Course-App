@@ -41,7 +41,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     ImageView imgPost;
     ImageView imgUserPost;
     ImageView imgCurrentUser;
-    TextView textPostDescending;
+    TextView textPostDescription;
     TextView textPostDateName;
     TextView textPostTitle;
     EditText editTextComment;
@@ -75,7 +75,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         imgCurrentUser = findViewById(R.id.post_details_current_user_img);
 
         textPostTitle = findViewById(R.id.post_details_title);
-        textPostDescending = findViewById(R.id.post_details_descending);
+        textPostDescription = findViewById(R.id.post_details_description);
         textPostDateName = findViewById(R.id.post_details_date_name);
 
         editTextComment = findViewById(R.id.post_details_comment);
@@ -129,7 +129,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         }
 
         String postDescription = getIntent().getExtras().getString("description");
-        textPostDescending.setText(postDescription);
+        textPostDescription.setText(postDescription);
 
         // set comment user image
         if (firebaseUser.getPhotoUrl() != null)
@@ -146,6 +146,8 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         long date = getIntent().getExtras().getLong("postDetailsDate");
         textPostDateName.setText(timeStampToString(date));
+
+        String postUsername = getIntent().getExtras().getString("username");
 
         // ini RecyclerView Comments
         iniRecyclerViewComments();
