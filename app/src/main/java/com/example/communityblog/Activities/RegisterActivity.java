@@ -105,7 +105,16 @@ public class RegisterActivity extends AppCompatActivity
                         // user account created successfully
                         showMessage("Account created");
                         // after we created user account we need to update the profile picture and name
-                        updateUserInfo(name, pickedImgUri, mAuth.getCurrentUser());
+
+                        // now we check if the picked image is null or not
+                        if (pickedImgUri != null)
+                        {
+                            updateUserInfo(name, pickedImgUri, mAuth.getCurrentUser());
+                        }
+                        else
+                        {
+                            updateUserInfoWithoutPhoto(name, mAuth.getCurrentUser());
+                        }
                     }
                     else
                     {
@@ -119,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     // update user photo and name
-    private void updateUserInfo(String name, Uri pickedImgUri, FirebaseUser currentUser)
+    private void updateUserInfo(final String name, Uri pickedImgUri, final FirebaseUser currentUser)
     {
         // first we need to upload the user photo to the Firebase storage and get the url
         StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
@@ -149,6 +158,23 @@ public class RegisterActivity extends AppCompatActivity
 
         });
 
+    }
+
+    // update user photo and name
+    private void updateUserInfoWithoutPhoto(final String name, final FirebaseUser currentUser)
+    {
+        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        currentUser.updateProfile(profileUpdate)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // the user info is updated successfully
+                        showMessage("The registration is completed");
+                        updateUI();
+                    }
+                });
     }
 
     // simple method to show toast message

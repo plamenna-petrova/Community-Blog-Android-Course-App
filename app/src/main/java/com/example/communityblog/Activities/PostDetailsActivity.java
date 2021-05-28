@@ -97,14 +97,13 @@ public class PostDetailsActivity extends AppCompatActivity {
             String commentContent = editTextComment.getText().toString();
             String uId = firebaseUser.getUid();
             String username = firebaseUser.getDisplayName();
-            String uImg = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();
+            String uImg = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null;
             Comment comment = new Comment(commentContent, uId, uImg, username);
-
-            commentReference.setValue(comment).addOnSuccessListener(aVoid -> {
-                showMessage("Comment added");
-                editTextComment.setText("");
-                btnAddComment.setVisibility(View.VISIBLE);
-            }).addOnFailureListener(exception -> showMessage("Failed to add comment" +exception.getMessage()));
+                commentReference.setValue(comment).addOnSuccessListener(aVoid -> {
+                    showMessage("Comment added");
+                    editTextComment.setText("");
+                    btnAddComment.setVisibility(View.VISIBLE);
+                }).addOnFailureListener(exception -> showMessage("Failed to add comment" +exception.getMessage()));
         });
 
         // now we need to bind all data into those views
@@ -119,13 +118,28 @@ public class PostDetailsActivity extends AppCompatActivity {
         textPostTitle.setText(postTitle);
 
         String userPostImage = getIntent().getExtras().getString("userPhoto");
-        Glide.with(this).load(userPostImage).into(imgUserPost);
+
+        if (userPostImage != null)
+        {
+            Glide.with(this).load(userPostImage).into(imgUserPost);
+        }
+        else
+        {
+            Glide.with(this).load(R.drawable.userphoto).into(imgUserPost);
+        }
 
         String postDescription = getIntent().getExtras().getString("description");
         textPostDescending.setText(postDescription);
 
         // set comment user image
-        Glide.with(this).load(firebaseUser.getPhotoUrl()).into(imgCurrentUser);
+        if (firebaseUser.getPhotoUrl() != null)
+        {
+            Glide.with(this).load(firebaseUser.getPhotoUrl()).into(imgCurrentUser);
+        }
+        else
+        {
+            Glide.with(this).load(R.drawable.userphoto).into(imgCurrentUser);
+        }
 
         // get post id
         postKey = getIntent().getExtras().getString("postKey");
@@ -133,6 +147,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         long date = getIntent().getExtras().getLong("postDetailsDate");
         textPostDateName.setText(timeStampToString(date));
 
+        // ini RecyclerView Comments
         iniRecyclerViewComments();
     }
 

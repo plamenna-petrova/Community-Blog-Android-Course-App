@@ -10,6 +10,8 @@ public class Comment
     private String userImg;
     private String userName;
 
+    private int defaultPhoto;
+
     private Object timestamp;
 
     public Comment()

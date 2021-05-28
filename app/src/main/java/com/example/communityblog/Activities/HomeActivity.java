@@ -191,9 +191,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 imageFilePath.putFile(pickedImgUri).addOnSuccessListener(taskSnapshot -> imageFilePath.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageDownloadLink = uri.toString();
                     // create post Object
-                    Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString());
-                    // Add post to Firebase Database
-                    addPost(post);
+
+                    if (currentUser.getPhotoUrl() != null)
+                    {
+                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString());
+                        // Add post to Firebase Database
+                        addPost(post);
+                    }
+                    else
+                    {
+                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), null);
+                        // Add post to Firebase Database
+                        addPost(post);
+                    }
+
                 }).addOnFailureListener(exception -> {
                     // something goes wrong when uploading the picture
                     showMessage(exception.getMessage());
@@ -314,7 +325,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // now we will use Glide to load user image
         // first we need to import the library
 
-        Glide.with(this).load(currentUser.getPhotoUrl()).into(navUserPhoto);
+        if (currentUser.getPhotoUrl() != null)
+        {
+            Glide.with(this).load(currentUser.getPhotoUrl()).into(navUserPhoto);
+        }
+        else
+        {
+            Glide.with(this).load(R.drawable.userphoto).into(navUserPhoto);
+        }
 
     }
 }
