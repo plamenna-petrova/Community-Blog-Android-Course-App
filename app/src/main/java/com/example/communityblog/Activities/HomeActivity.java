@@ -170,7 +170,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         popupClickProgress = popupAddPost.findViewById(R.id.popup_progressBar);
 
         // load current user profile photo
-        Glide.with(HomeActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
+        if (currentUser.getPhotoUrl() != null)
+        {
+            Glide.with(HomeActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
+        }
+        else
+        {
+            Glide.with(HomeActivity.this).load(R.drawable.userphoto).into(popupUserImage);
+        }
 
         // Add post click Listener
         popupAddBtn.setOnClickListener(view -> {
