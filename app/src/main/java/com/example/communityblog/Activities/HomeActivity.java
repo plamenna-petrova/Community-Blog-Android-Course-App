@@ -201,13 +201,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     if (currentUser.getPhotoUrl() != null)
                     {
-                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString());
+                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString(), currentUser.getDisplayName());
                         // Add post to Firebase Database
                         addPost(post);
                     }
                     else
                     {
-                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), null);
+                        Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), null, currentUser.getDisplayName());
                         // Add post to Firebase Database
                         addPost(post);
                     }

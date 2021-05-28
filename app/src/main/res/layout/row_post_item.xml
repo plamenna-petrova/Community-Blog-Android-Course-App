@@ -55,6 +55,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/row_post_image_view"
         app:layout_constraintTop_toTopOf="@+id/row_post_image_view"
+        app:layout_constraintVertical_bias="0.619"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/row_post_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="202dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#FFFFFF"
+        android:text="@string/row_post_item_username"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/row_post_profile_img"
+        app:layout_constraintTop_toTopOf="@+id/row_post_image"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

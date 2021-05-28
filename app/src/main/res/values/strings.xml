@@ -25,8 +25,8 @@
     <string name="nav_drawer_sign_out_title">Sign Out</string>
     <string name="fab_icon_style_content_description">Fab Ico Home</string>
     <string name="home_fragment">"Home Fragment"</string>
-    <string name="profile_fragment">"Profile Fragment"</string>
-    <string name="settings_fragment">"Settings Fragment"</string>
+    <string name="profile_fragment">The user can add posts and comment on their posts as well as on the posts by other users. s without profile image get a default image. They have the same rights as the others.</string>
+    <string name="settings_fragment">To be implemented. Just dummy navigation menu item for now.</string>
     <string name="popup_user_image_content_description">Popup User Image</string>
     <string name="popup_title">Title</string>
     <string name="popup_description">Description</string>
@@ -48,4 +48,5 @@
     <string name="row_comment_username">Comment Username</string>
     <string name="row_comment_content">Comment Content Here</string>
     <string name="row_comment_sample_timestamp">10:20</string>
+    <string name="row_post_item_username">Username</string>
 </resources>

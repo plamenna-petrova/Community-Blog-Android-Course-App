@@ -52,6 +52,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder>
         {
             Glide.with(mContext).load(R.drawable.userphoto).into(holder.imgPostProfile);
         }
+
+        holder.postUsername.setText(mData.get(position).getUserName());
     }
 
     @Override
@@ -65,6 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder>
         TextView postTitle;
         ImageView imgPost;
         ImageView imgPostProfile;
+        TextView postUsername;
 
         public MyViewHolder(View itemView)
         {
@@ -73,6 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder>
             postTitle = itemView.findViewById(R.id.row_post_title);
             imgPost = itemView.findViewById(R.id.row_post_image);
             imgPostProfile = itemView.findViewById(R.id.row_post_profile_img);
+            postUsername = itemView.findViewById(R.id.row_post_username);
 
             itemView.setOnClickListener(view -> {
                 Intent postDetailsActivityIntent = new Intent(mContext, PostDetailsActivity.class);
@@ -82,6 +86,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder>
                 postDetailsActivityIntent.putExtra("description", mData.get(position).getDescription());
                 postDetailsActivityIntent.putExtra("postKey", mData.get(position).getPostKey());
                 postDetailsActivityIntent.putExtra("userPhoto", mData.get(position).getUserPhoto());
+                postDetailsActivityIntent.putExtra("userName", mData.get(position).getUserName());
                 // user name not added to post object
                 // postDetailsActivityIntent.putExtra("userName", mData.get(position).getUsername());
                 long timestamp = (long) mData.get(position).getTimeStamp();
