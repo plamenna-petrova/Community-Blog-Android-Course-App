@@ -1,21 +1,29 @@
 package com.example.communityblog.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,6 +40,7 @@ import com.example.communityblog.Fragments.ProfileFragment;
 import com.example.communityblog.Fragments.SettingsFragment;
 import com.example.communityblog.Models.Post;
 import com.example.communityblog.R;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,6 +54,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -100,6 +110,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // set the home fragment as the default done
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+
+        createNotificationChannel();
     }
 
     private void setupPopupImageClick()
@@ -204,12 +216,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), currentUser.getPhotoUrl().toString(), currentUser.getDisplayName());
                         // Add post to Firebase Database
                         addPost(post);
+                        // Add a notification that a new post has been created
+                        setUpPostCreatedNotification(post);
                     }
                     else
                     {
                         Post post = new Post(popupTitle.getText().toString(), popupDescription.getText().toString(), imageDownloadLink, currentUser.getUid(), null, currentUser.getDisplayName());
                         // Add post to Firebase Database
                         addPost(post);
+                        // Add a notification that a new post has been created
+                        setUpPostCreatedNotification(post);
                     }
 
                 }).addOnFailureListener(exception -> {
@@ -244,6 +260,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             popupAddBtn.setVisibility(View.VISIBLE);
             popupAddPost.dismiss();
         });
+    }
+
+    private void createNotificationChannel()
+    {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Test Notification";
+            String description = "Test Notification Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("community-blog-test", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void setUpPostCreatedNotification(Post post)
+    {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "community-blog-test")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("New Post Added")
+                .setContentText(post.getTitle() + " by " +post.getUserName())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        // Generating a random id
+        int randomId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(randomId, builder.build());
     }
 
     private void showMessage(String message)
