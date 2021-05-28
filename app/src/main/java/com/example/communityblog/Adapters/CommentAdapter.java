@@ -51,6 +51,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         {
             Glide.with(mContext).load(R.drawable.userphoto).into(holder.imgUser);
         }
+
         holder.username.setText(mData.get(position).getUserName());
         holder.commentContent.setText(mData.get(position).getContent());
         holder.commentTime.setText(timeStampToString((Long) mData.get(position).getTimestamp()));
