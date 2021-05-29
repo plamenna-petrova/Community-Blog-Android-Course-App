@@ -13,6 +13,7 @@
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginTop="36dp"
+        android:scaleType="fitXY"
         android:contentDescription="@string/sample_user_photo"
         app:layout_constraintBottom_toTopOf="@+id/login_mail"
         app:layout_constraintEnd_toEndOf="parent"

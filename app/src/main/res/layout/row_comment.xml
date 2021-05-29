@@ -10,11 +10,12 @@
 
     <ImageView
         android:id="@+id/comment_user_img"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/row_comment_user_img_content_description"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -43,8 +44,10 @@
         android:textColor="#969595"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/comment_user_img"
-        app:layout_constraintTop_toBottomOf="@+id/comment_username" />
+        app:layout_constraintTop_toBottomOf="@+id/comment_username"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:textSize="12sp"
