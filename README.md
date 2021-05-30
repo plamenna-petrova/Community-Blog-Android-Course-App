@@ -14,8 +14,7 @@ the login form appears. An onClickListener is being activated for each post item
 The event loads the PostDetailsActivity. This activity displays detailed information about the posts and their authors. Below there is another RecyclerView section, this time for comments.
 Every user can comment on the posts of other users as well as on theirs, there are no limitations on commenting. The comments are stored in the Realtime Database, too - they have
 a reference to the key of the post they belong to. All images, integrated in the project, are saved in Firebase Storage - as strings, pointing to the downloaded links or as nullables.
-The app supports portrait and landscape screen orientation, when the device is rotated to the available degress. An essential details is the appearance of a notification, after a new post is being added and the RecyclerView
-- refreshed.
+The app supports portrait and landscape screen orientation, when the device is rotated to the available degress. An essential details is the appearance of a notification, after a new post is being added and the RecyclerView is refreshed.
 
 ## How to configure the project
 
