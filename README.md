@@ -10,7 +10,7 @@ Once registered/loged in a user can add new posts with title, description and im
 The Home Activity makes use of the Home Fragment,
 where a RecyclerView of the posts is being instanciated. On the left side, there is a header navigation drawer with a custom menu. The user can navigate through the three menu items.
 However, the last two show only static dummy text. The first Home segment is previously refered as to the major component. The rear button of the drawer serves as logout. If clicked,
-the login form appers. An onClickListener is being activated for each post item from the RecyclerView - the information of the objects is stored also in the Firebase Realtime Database 
+the login form appears. An onClickListener is being activated for each post item from the RecyclerView - the information of the objects is stored also in the Firebase Realtime Database 
 The event loads the PostDetailsActivity. This activity displays detailed information about the posts and authors. Below there is another RecyclerView section, this time for comments.
 Every user can comment on the posts of other users as well as on their, there is no limitations on commenting. The comments are stored in the Realtime Database, too - they have
 a reference to the key of the post they belong to. All images, integrated in the project are saved in Firebase Storage - as strings, pointing to the downloaded links or as nullables.
@@ -29,12 +29,12 @@ Community Blog works with Android Studio as IDE, embeds Firebase Bom, Firebase A
 ## File Structure
 
 1. java/com/example/communityblog
-  - Activities - have different functions and can be switched to with intents
+  - Activities - have different functions and can be switched to, using intents
      - HomeActivity
      - LoginActivity
      - PostDetailsActivity
      - RegisterActivity
-  - Adapters - adapting a single to item to fit to a list of objects
+  - Adapters - adapting a single item to fit to a list of objects
      - CommentAdapter 
      - PostAdapter
   - Fragments - separate the logic into smaller parts
