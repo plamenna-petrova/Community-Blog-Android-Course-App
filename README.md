@@ -50,8 +50,11 @@ Community Blog works with Android Studio as IDE, embeds Firebase Bom, Firebase A
   - layout - all xml template files, in the view of which the values are injected from the database or after some processing. Some do includes buttons and progress bars, too.
   Hence both static and dynamic content is being submitted.
   - values - for color, strings, dimensions, styles and themes values, playing the role of secondary helpers, when building the entire layout of the app  
-3. AndroidManifest.xml 
-Here activities and permissions are registered and the rotation of the devices is updated
+3. AndroidManifest.xml - here activities and permissions are registered and the rotation of the devices is updated
+
+## Documentation
+
+The documentation file is named "1909011132_Документация_Мобилни_приложения_за_Android"
 
 
 
