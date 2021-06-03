@@ -8,13 +8,13 @@ In case a user doesn't have a profile yet, they should click on the default imag
 Then a redirection to the registration form follows. After login or registration alternatively the user will gain access to the Home Activity screen.
 Once registered/logged in a user can add new posts with title, description and image by triggering the popup with a special drawable pen icon. 
 The Home Activity makes use of the Home Fragment,
-where a RecyclerView of the posts is being instanciated. On the left side, there is a header navigation drawer with a custom menu. The user can navigate through the three menu items.
+where a RecyclerView of the posts is being instantiated. On the left side, there is a header navigation drawer with a custom menu. The user can navigate through the three menu items.
 However, the last two show only static dummy text. The first Home segment is previously refered to as the major component. The rear button of the drawer serves as logout. If clicked,
 the login form appears. An onClickListener is being activated for each post item from the RecyclerView - the information of the objects is stored also in the Firebase Realtime Database 
 The event loads the PostDetailsActivity. This activity displays detailed information about the posts and their authors. Below there is another RecyclerView section, this time for comments.
 Every user can comment on the posts of other users as well as on theirs, there are no limitations on commenting. The comments are stored in the Realtime Database, too - they have
 a reference to the key of the post they belong to. All images, integrated in the project, are saved in Firebase Storage - as strings, pointing to the downloaded links or as nullables.
-The app supports portrait and landscape screen orientation, when the device is rotated to the available degress. An essential details is the appearance of a notification, after a new post is being added and the RecyclerView is refreshed.
+The app supports portrait and landscape screen orientation, when the device is rotated to the available degrees. An essential detail is the appearance of a notification, after a new post is being added and the RecyclerView is refreshed.
 
 ## How to configure the project
 
@@ -33,7 +33,7 @@ Community Blog works with Android Studio as IDE, embeds Firebase Bom, Firebase A
      - LoginActivity
      - PostDetailsActivity
      - RegisterActivity
-  - Adapters - adapt a single item to fit to a list of objects
+  - Adapters - adapt database data to fit to widgets
      - CommentAdapter 
      - PostAdapter
   - Fragments - separate the logic into smaller parts
